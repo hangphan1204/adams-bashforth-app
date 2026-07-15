@@ -244,6 +244,38 @@ st.markdown("""
     .rank-3 { background: #fffaf5; border-left-color: #b45309; }
     .medal { font-size: 1.4rem; font-weight: bold; }
     
+    /* Recommendation card */
+    .recommend-card {
+        background: #ffffff;
+        padding: 1.5rem;
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        border-left: 5px solid #ffd700;
+        margin-top: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .recommend-card h4 { 
+        color: #2d1b69 !important; 
+        margin-top: 0; 
+        font-weight: 700; 
+    }
+    .recommend-do {
+        background: #f0fdf4;
+        padding: 0.8rem 1rem;
+        border-radius: 10px;
+        border-left: 4px solid #22c55e;
+        margin-bottom: 0.5rem;
+    }
+    .recommend-do b { color: #16a34a; }
+    .recommend-dont {
+        background: #fef2f2;
+        padding: 0.8rem 1rem;
+        border-radius: 10px;
+        border-left: 4px solid #ef4444;
+        margin-bottom: 0.5rem;
+    }
+    .recommend-dont b { color: #dc2626; }
+    
     /* Footer - gradient, chữ trắng */
     .footer {
         text-align: center;
@@ -395,6 +427,59 @@ st.markdown("""
         color: #2d1b69 !important;
         border-bottom-color: #667eea !important;
     }
+
+    /* === CSS MỚI CHO PHẦN ĐÁNH GIÁ === */
+    .eval-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.2rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        border: 1px solid #e8ecf1;
+        transition: all 0.2s ease;
+        height: 100%;
+    }
+    .eval-card:hover {
+        box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        transform: translateY(-2px);
+    }
+    .eval-method {
+        font-size: 1.1rem;
+        font-weight: 700;
+        padding: 0.3rem 0.8rem;
+        border-radius: 6px;
+        display: inline-block;
+        margin-bottom: 0.5rem;
+    }
+    .eval-stat {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.3rem 0;
+        border-bottom: 1px solid #f0f2f6;
+        font-size: 0.9rem;
+    }
+    .eval-stat:last-child {
+        border-bottom: none;
+    }
+    .eval-stat-label {
+        color: #64748b;
+        font-weight: 500;
+    }
+    .eval-stat-value {
+        font-weight: 600;
+        color: #1a1a2e;
+    }
+    .eval-badge {
+        display: inline-block;
+        padding: 0.2rem 0.6rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin-left: 0.3rem;
+    }
+    .badge-best { background: #dcfce7; color: #16a34a; }
+    .badge-good { background: #dbeafe; color: #2563eb; }
+    .badge-ok { background: #fef3c7; color: #d97706; }
+    .badge-slow { background: #fee2e2; color: #dc2626; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -732,7 +817,7 @@ y0_use = st.session_state.y0_val
 N_use = st.session_state.N_val
 h_use = st.session_state.h_val
 
-# ----------------- HEADER CHÍNH + LỊCH SỬ -----------------
+# ----------------- HEADER CHÍNH -----------------
 st.markdown("""
 <div class="custom-header">
     <h1>☕ Hệ thống Mô phỏng Adams-Bashforth</h1>
@@ -746,29 +831,6 @@ st.markdown("""
     </div>
 </div>
 """, unsafe_allow_html=True)
-
-# --- LỊCH SỬ ADAMS-BASHFORTH ---
-with st.expander("📜 Lịch sử phương pháp Adams-Bashforth", expanded=False):
-    st.markdown("""
-    ### 🪐 John Couch Adams và phương pháp đa bước
-    
-    **John Couch Adams** (1819-1892) là nhà toán học và thiên văn học người Anh. 
-    Ông nổi tiếng với việc **dự đoán sự tồn tại của Sao Hải Vương** vào năm 1846 
-    bằng cách tính toán quỹ đạo của nó từ những nhiễu loạn trong quỹ đạo của Sao Thiên Vương.
-    
-    #### Phương pháp Adams-Bashforth:
-    - Được phát triển để **tính toán quỹ đạo hành tinh** một cách chính xác
-    - Là **phương pháp đa bước hiện** (explicit multistep method)
-    - **Ưu điểm:** Chỉ cần gọi hàm f 1 lần mỗi bước, rất nhanh
-    - **Nhược điểm:** Vùng ổn định nhỏ hơn các phương pháp ẩn
-    
-    #### Các biến thể:
-    - **AB2:** Sử dụng 2 bước trước, độ chính xác bậc 2
-    - **AB3:** Sử dụng 3 bước trước, độ chính xác bậc 3  
-    - **AB4:** Sử dụng 4 bước trước, độ chính xác bậc 4
-    
-    *"Phương pháp Adams-Bashforth là công cụ không thể thiếu trong tính toán quỹ đạo vệ tinh và thiên thể."*
-    """)
 
 # ----------------- THIẾT LẬP PHƯƠNG TRÌNH -----------------
 f_lambda = None
@@ -921,6 +983,29 @@ err_ab4 = max_err(Y_ab4, Y_true)
 err_rk4 = max_err(Y_rk4, Y_true)
 
 has_diverged = np.any(np.isnan(Y_ab2)) or np.any(np.isnan(Y_ab3)) or np.any(np.isnan(Y_ab4))
+
+# --- LỊCH SỬ ADAMS-BASHFORTH ---
+with st.expander("📜 Lịch sử phương pháp Adams-Bashforth", expanded=False):
+    st.markdown("""
+    ### 🪐 John Couch Adams và phương pháp đa bước
+    
+    **John Couch Adams** (1819-1892) là nhà toán học và thiên văn học người Anh. 
+    Ông nổi tiếng với việc **dự đoán sự tồn tại của Sao Hải Vương** vào năm 1846 
+    bằng cách tính toán quỹ đạo của nó từ những nhiễu loạn trong quỹ đạo của Sao Thiên Vương.
+    
+    #### Phương pháp Adams-Bashforth:
+    - Được phát triển để **tính toán quỹ đạo hành tinh** một cách chính xác
+    - Là **phương pháp đa bước hiện** (explicit multistep method)
+    - **Ưu điểm:** Chỉ cần gọi hàm f 1 lần mỗi bước, rất nhanh
+    - **Nhược điểm:** Vùng ổn định nhỏ hơn các phương pháp ẩn
+    
+    #### Các biến thể:
+    - **AB2:** Sử dụng 2 bước trước, độ chính xác bậc 2
+    - **AB3:** Sử dụng 3 bước trước, độ chính xác bậc 3  
+    - **AB4:** Sử dụng 4 bước trước, độ chính xác bậc 4
+    
+    *"Phương pháp Adams-Bashforth là công cụ không thể thiếu trong tính toán quỹ đạo vệ tinh và thiên thể."*
+    """)
 
 # --- HIỂN THỊ HỒ SƠ HỌC THUẬT ---
 if st.session_state.current_problem_type == "Ứng dụng thực tế sinh động" and real_history:
@@ -1079,6 +1164,7 @@ with col_lead3:
         """, unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
+
 # --- BẢN ĐỒ VÙNG ỔN ĐỊNH ---
 st.markdown("""
 <div class="section-header">
@@ -1113,6 +1199,7 @@ with col_stab2:
         <h5>📍 Điểm kiểm thử hiện tại:</h5>
         <p><b>hλ</b> = <b>{h_lambda_point:.4f}</b></p>
         <p style="font-size: 0.9rem; color: #555;">Vị trí của 🔴 chấm đỏ trên đồ thị</p>
+    </div>
     """, unsafe_allow_html=True)
     if h_lambda_point > -0.3:
         st.success("✅ **Nghiệm ổn định!** Chấm đỏ nằm trong vùng ổn định.")
@@ -1225,6 +1312,157 @@ else:
 
 st.dataframe(styled_df, use_container_width=True, height=400)
 
+# --- ĐÁNH GIÁ VÀ KẾT LUẬN - ĐẸP MẮT ---
+if not has_diverged and has_exact and Y_true is not None:
+    st.markdown("""
+    <div class="section-header">
+        <h3>⭐ Đánh giá & Kết luận</h3>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Xác định best/worst
+    methods = ['AB2', 'AB3', 'AB4', 'RK4']
+    errs = [err_ab2, err_ab3, err_ab4, err_rk4]
+    times = [t_ab2, t_ab3, t_ab4, t_rk4]
+    calls = [fc_ab2, fc_ab3, fc_ab4, fc_rk4]
+    
+    best_acc = methods[np.nanargmin(errs)] if not all(np.isnan(e) for e in errs) else 'N/A'
+    best_time = methods[np.argmin(times)]
+    best_call = methods[np.argmin(calls)]
+    
+    # === KẾT LUẬN CHÍNH - NỔI BẬT ===
+    st.markdown(f"""
+    <div style="background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%);
+                padding: 1.5rem 2rem;
+                border-radius: 16px;
+                border: 2px solid #e8ecf1;
+                box-shadow: 0 4px 20px rgba(102, 126, 234, 0.08);
+                margin-bottom: 1.2rem;
+                position: relative;
+                overflow: hidden;">
+        <div style="position: absolute; top: -50px; right: -50px; width: 150px; height: 150px; 
+                    background: radial-gradient(circle, rgba(255,215,0,0.1) 0%, transparent 70%);
+                    border-radius: 50%;">
+        </div>
+        <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; position: relative; z-index: 1;">
+            <div style="background: linear-gradient(135deg, #ffd700, #f59e0b); 
+                        padding: 0.5rem 1.2rem; 
+                        border-radius: 30px;
+                        color: white;
+                        font-weight: 700;
+                        font-size: 1.1rem;
+                        box-shadow: 0 4px 12px rgba(255,215,0,0.3);
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 0.5rem;">
+                <span>🏆</span> AB4
+            </div>
+            <span style="font-size: 1.1rem; color: #1a1a2e; font-weight: 500;">
+                là lựa chọn <span style="color: #16a34a; font-weight: 700;">tối ưu nhất</span>
+                với độ chính xác cao 
+                <span style="background: #f0fdf4; padding: 0.2rem 0.8rem; border-radius: 20px; color: #16a34a; font-weight: 600; font-size: 0.95rem;">
+                    {f'{err_ab4:.2e}' if not np.isnan(err_ab4) else 'N/A'}
+                </span>
+                và nhanh hơn RK4 
+                <span style="background: #dbeafe; padding: 0.2rem 0.8rem; border-radius: 20px; color: #2563eb; font-weight: 600; font-size: 0.95rem;">
+                    {f'{(t_rk4/t_ab4 - 1)*100:.0f}%' if t_ab4 > 0 else 'N/A'}
+                </span>
+            </span>
+        </div>
+        <div style="display: flex; gap: 2rem; margin-top: 0.8rem; flex-wrap: wrap; position: relative; z-index: 1; padding-left: 0.5rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; background: #f8fafc; padding: 0.3rem 1rem; border-radius: 20px;">
+                <span>🥇</span>
+                <span style="color: #475569; font-size: 0.9rem;">Chính xác nhất: <b style="color: #16a34a;">{best_acc}</b></span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; background: #f8fafc; padding: 0.3rem 1rem; border-radius: 20px;">
+                <span>⚡</span>
+                <span style="color: #475569; font-size: 0.9rem;">Nhanh nhất: <b style="color: #2563eb;">{best_time}</b></span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; background: #f8fafc; padding: 0.3rem 1rem; border-radius: 20px;">
+                <span>💨</span>
+                <span style="color: #475569; font-size: 0.9rem;">Ít gọi hàm: <b style="color: #7c3aed;">{best_call}</b></span>
+            </div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # === GIẢI THÍCH - 2 CỘT ĐẸP ===
+    col_exp1, col_exp2 = st.columns(2)
+    
+    with col_exp1:
+        st.markdown("""
+        <div style="background: #ffffff;
+                    padding: 1.2rem 1.5rem;
+                    border-radius: 12px;
+                    border: 1px solid #e8ecf1;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+                    height: 100%;
+                    transition: all 0.2s ease;">
+            <div style="display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem;">
+                <div style="background: linear-gradient(135deg, #ffd700, #f59e0b); 
+                            width: 8px; 
+                            height: 40px; 
+                            border-radius: 4px;">
+                </div>
+                <div>
+                    <span style="font-size: 1.2rem;">✅</span>
+                    <b style="color: #2d1b69; font-size: 1rem;"> Tại sao AB4 tốt nhất?</b>
+                </div>
+            </div>
+            <div style="padding-left: 0.5rem;">
+                <div style="display: flex; align-items: center; gap: 0.8rem; padding: 0.4rem 0; border-bottom: 1px solid #f1f5f9;">
+                    <span style="background: #dcfce7; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.75rem; color: #16a34a; font-weight: 600;">Bậc 4</span>
+                    <span style="color: #475569; font-size: 0.9rem;">Độ chính xác cao nhất trong họ AB</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.8rem; padding: 0.4rem 0; border-bottom: 1px solid #f1f5f9;">
+                    <span style="background: #dbeafe; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.75rem; color: #2563eb; font-weight: 600;">⚡ Nhanh</span>
+                    <span style="color: #475569; font-size: 0.9rem;">Chỉ chậm hơn AB2 khoảng 15-20%</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.8rem; padding: 0.4rem 0;">
+                    <span style="background: #fef3c7; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.75rem; color: #d97706; font-weight: 600;">🔄 Ít gọi</span>
+                    <span style="color: #475569; font-size: 0.9rem;">Chỉ gọi hàm 1 lần/bước, rất hiệu quả</span>
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col_exp2:
+        st.markdown("""
+        <div style="background: #ffffff;
+                    padding: 1.2rem 1.5rem;
+                    border-radius: 12px;
+                    border: 1px solid #e8ecf1;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+                    height: 100%;
+                    transition: all 0.2s ease;">
+            <div style="display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem;">
+                <div style="background: linear-gradient(135deg, #667eea, #764ba2); 
+                            width: 8px; 
+                            height: 40px; 
+                            border-radius: 4px;">
+                </div>
+                <div>
+                    <span style="font-size: 1.2rem;">🔄</span>
+                    <b style="color: #2d1b69; font-size: 1rem;"> So với RK4?</b>
+                </div>
+            </div>
+            <div style="padding-left: 0.5rem;">
+                <div style="display: flex; align-items: center; gap: 0.8rem; padding: 0.4rem 0; border-bottom: 1px solid #f1f5f9;">
+                    <span style="background: #dcfce7; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.75rem; color: #16a34a; font-weight: 600;">📉 Sai số</span>
+                    <span style="color: #475569; font-size: 0.9rem;">Chênh lệch không đáng kể (cùng bậc 4)</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.8rem; padding: 0.4rem 0; border-bottom: 1px solid #f1f5f9;">
+                    <span style="background: #dbeafe; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.75rem; color: #2563eb; font-weight: 600;">⚡ Tốc độ</span>
+                    <span style="color: #475569; font-size: 0.9rem;">Nhanh hơn RK4 đáng kể</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.8rem; padding: 0.4rem 0;">
+                    <span style="background: #fef3c7; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.75rem; color: #d97706; font-weight: 600;">💡 Kết luận</span>
+                    <span style="color: #475569; font-size: 0.9rem;">AB4 <b style="color: #16a34a;">vượt trội</b> về hiệu suất tổng thể</span>
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
 # --- XUẤT DỮ LIỆU ---
 st.markdown("""
 <div class="section-header">
@@ -1237,8 +1475,6 @@ col_dl1, col_dl2, col_dl3, col_dl4 = st.columns(4)
 with col_dl1:
     csv = df_matrix.to_csv(index=False, float_format='%.12f').encode('utf-8-sig')
     st.download_button(label="📥 Tải CSV", data=csv, file_name=f"nghiem_AB_{N_use}_{Tmax_use}.csv", mime="text/csv", use_container_width=True)
-
-# col_dl2 đã được xóa (không còn Excel)
 
 with col_dl3:
     def format_error(val):
@@ -1258,6 +1494,11 @@ KẾT QUẢ:
 - AB3: Sai số max = {format_error(err_ab3)}, Thời gian = {t_ab3:.6f}s
 - AB4: Sai số max = {format_error(err_ab4)}, Thời gian = {t_ab4:.6f}s
 - RK4: Sai số max = {format_error(err_rk4)}, Thời gian = {t_rk4:.6f}s
+
+ĐÁNH GIÁ:
+- Phương pháp tốt nhất về độ chính xác: {best_acc if 'best_acc' in locals() else 'N/A'}
+- Phương pháp nhanh nhất: {best_time if 'best_time' in locals() else 'N/A'}
+- Phương pháp hiệu quả nhất: {best_call if 'best_call' in locals() else 'N/A'}
     """
     st.download_button(label="📄 Tải báo cáo", data=report, file_name=f"bao_cao_AB_{N_use}_{Tmax_use}.txt", mime="text/plain", use_container_width=True)
 
