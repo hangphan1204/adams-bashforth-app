@@ -70,25 +70,6 @@ st.markdown("""
         color: #1a1a2e !important;
         font-weight: 600 !important;
     }
-    
-    /* Fix màu selectbox trên nền light */
-    .stSidebar .stSelectbox div[data-baseweb="select"] > div {
-        background-color: #ffffff !important;
-        color: #1a1a2e !important;
-    }
-    .stSidebar .stSelectbox div[data-baseweb="select"] > div * {
-        color: #1a1a2e !important;
-    }
-    .stSidebar .stSelectbox ul {
-        background-color: #ffffff !important;
-    }
-    .stSidebar .stSelectbox ul li {
-        color: #1a1a2e !important;
-        background-color: #ffffff !important;
-    }
-    .stSidebar .stSelectbox ul li:hover {
-        background-color: #f0f2f6 !important;
-    }
 
     .stSidebar div[data-testid="stButton"] button {
         background: linear-gradient(135deg, #00b09b 0%, #96c93d 100%) !important;
@@ -1039,22 +1020,9 @@ for col in df_display.columns:
     else:
         df_display[col] = df_display[col].apply(lambda x: f"{x:.6f}" if not pd.isna(x) else "NaN")
 
-# ===== HIỂN THỊ BẢNG DỮ LIỆU (màu chữ - hiển thị trên mọi nền) =====
-def color_errors(val):
-    try:
-        if pd.isna(val) or val == 0:
-            return ''
-        elif val < 0.001:
-            return 'color: #00b09b'  # xanh - sai số nhỏ
-        elif val > 0.1:
-            return 'color: #ff4b4b'  # đỏ - sai số lớn
-        else:
-            return 'color: #ffa500'  # cam - trung bình
-    except:
-        return ''
-
+# ===== HIỂN THỊ BẢNG DỮ LIỆU =====
 if has_exact and Y_true is not None and not has_diverged:
-    styled_df = df_display.style.applymap(color_errors, subset=['Sai số tuyệt đối AB4']).applymap(color_errors, subset=['Sai số tương đối AB4 (%)'])
+    styled_df = df_display.style.background_gradient(subset=['Sai số tuyệt đối AB4'], cmap='RdYlGn_r', low=0.1, high=0.9).background_gradient(subset=['Sai số tương đối AB4 (%)'], cmap='RdYlBu_r', low=0.1, high=0.9)
 else:
     styled_df = df_display
 
