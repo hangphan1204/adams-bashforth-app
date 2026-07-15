@@ -716,7 +716,7 @@ st.session_state.h_val = h_final
 st.sidebar.markdown("---")
 st.sidebar.markdown(f"""
 <div class="info-box">
-    <p style="color: #FFFFFF !important;">📐 <b style="color: #ffd700 !important;">Thông số hiện tại:</b></p>
+    <p style="color: #FFD700 !important; font-weight: bold;">📐 Thông số hiện tại:</p>
     <p style="color: #FFFFFF !important;">Tmax = {Tmax}</p>
     <p style="color: #FFFFFF !important;">N = {N_final}</p>
     <p style="color: #FFFFFF !important;">h = {h_final:.10f}</p>
