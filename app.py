@@ -21,6 +21,7 @@ st.markdown("""
     .stApp { background: #f0f2f6; }
     .main > div { padding-top: 1rem; background: #f0f2f6; }
     
+    /* Header chính */
     .custom-header {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         padding: 2rem 2.5rem;
@@ -30,8 +31,19 @@ st.markdown("""
         box-shadow: 0 8px 30px rgba(102, 126, 234, 0.3);
         border: none;
     }
-    .custom-header h1 { margin: 0; font-size: 2.6rem; font-weight: 700; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-    .custom-header h2 { margin: 0.3rem 0 0 0; font-weight: 300; font-size: 1.6rem; color: rgba(255, 255, 255, 0.95); }
+    .custom-header h1 { 
+        margin: 0; 
+        font-size: 2.6rem; 
+        font-weight: 700; 
+        color: white; 
+        text-shadow: 0 2px 4px rgba(0,0,0,0.2); 
+    }
+    .custom-header h2 { 
+        margin: 0.3rem 0 0 0; 
+        font-weight: 300; 
+        font-size: 1.6rem; 
+        color: rgba(255, 255, 255, 0.95); 
+    }
     
     .badge-container { margin-top: 0.8rem; display: flex; gap: 0.8rem; flex-wrap: wrap; }
     .badge {
@@ -45,14 +57,21 @@ st.markdown("""
         font-weight: 500;
     }
     
+    /* Sidebar - đảm bảo chữ trắng trên nền gradient */
     .stSidebar {
         background: linear-gradient(180deg, #2d1b69 0%, #11998e 100%) !important;
         border-right: none;
     }
     .stSidebar * { color: #FFFFFF !important; }
     .stSidebar label { color: #FFFFFF !important; font-weight: 500 !important; }
+    .stSidebar .stNumberInput label { color: #FFFFFF !important; }
+    .stSidebar .stSelectbox label { color: #FFFFFF !important; }
+    .stSidebar .stRadio label { color: #FFFFFF !important; }
+    .stSidebar .stCheckbox label { color: #FFFFFF !important; }
     
-    .stSidebar .stNumberInput input, .stSidebar .stTextInput input {
+    /* Input fields trong sidebar - chữ đen */
+    .stSidebar .stNumberInput input, 
+    .stSidebar .stTextInput input {
         background-color: #ffffff !important;
         color: #1a1a2e !important;
         border: 2px solid rgba(255, 255, 255, 0.3) !important;
@@ -70,7 +89,21 @@ st.markdown("""
         color: #1a1a2e !important;
         font-weight: 600 !important;
     }
-
+    
+    /* Radio buttons trong sidebar - chữ trắng */
+    .stSidebar .stRadio div[role="radiogroup"] label {
+        color: #FFFFFF !important;
+    }
+    .stSidebar .stRadio div[role="radiogroup"] label span {
+        color: #FFFFFF !important;
+    }
+    
+    /* Checkbox trong sidebar */
+    .stSidebar .stCheckbox label span {
+        color: #FFFFFF !important;
+    }
+    
+    /* Button trong sidebar */
     .stSidebar div[data-testid="stButton"] button {
         background: linear-gradient(135deg, #00b09b 0%, #96c93d 100%) !important;
         border: 2px solid rgba(255, 255, 255, 0.4) !important;
@@ -78,6 +111,7 @@ st.markdown("""
         box-shadow: 0 4px 15px rgba(0, 176, 155, 0.3) !important;
         transition: all 0.3s ease !important;
         width: 100% !important;
+        color: #FFFFFF !important;
     }
     .stSidebar div[data-testid="stButton"] button * {
         color: #FFFFFF !important;
@@ -88,7 +122,8 @@ st.markdown("""
         transform: translateY(-2px) !important;
         box-shadow: 0 6px 20px rgba(0, 176, 155, 0.5) !important;
     }
-
+    
+    /* Form submit button */
     div[data-testid="stFormSubmitButton"] button {
         background: linear-gradient(135deg, #ffd700 0%, #ffa500 100%) !important;
         border: none !important;
@@ -106,6 +141,7 @@ st.markdown("""
         box-shadow: 0 6px 25px rgba(255, 215, 0, 0.6) !important;
     }
     
+    /* Info box trong sidebar */
     .info-box {
         background: rgba(0, 0, 0, 0.3) !important;
         backdrop-filter: blur(10px);
@@ -117,6 +153,27 @@ st.markdown("""
     .info-box p { margin: 0.3rem 0; color: #FFFFFF !important; }
     .info-box b { color: #ffd700 !important; }
     
+    /* Tooltip hint trong sidebar */
+    .tooltip-hint {
+        background: rgba(255,255,255,0.1) !important;
+        border-color: rgba(255,215,0,0.5) !important;
+        color: #FFFFFF !important;
+        border: 1px solid rgba(255,215,0,0.3);
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+        margin: 0.5rem 0;
+        font-size: 0.9rem;
+    }
+    .tooltip-hint b { color: #ffd700 !important; }
+    .tooltip-hint kbd {
+        background: rgba(255,215,0,0.2);
+        color: #FFFFFF;
+        padding: 0.1rem 0.5rem;
+        border-radius: 4px;
+        border: 1px solid rgba(255,215,0,0.3);
+    }
+    
+    /* Section header - chữ trắng */
     .section-header {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         padding: 0.7rem 1.5rem;
@@ -125,8 +182,14 @@ st.markdown("""
         border: none;
         box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
     }
-    .section-header h3 { color: white; margin: 0; font-weight: 600; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+    .section-header h3 { 
+        color: white; 
+        margin: 0; 
+        font-weight: 600; 
+        text-shadow: 0 2px 4px rgba(0,0,0,0.2); 
+    }
     
+    /* Academic card - chữ đen trên nền trắng */
     .academic-card {
         background: #ffffff;
         padding: 1.5rem;
@@ -134,9 +197,18 @@ st.markdown("""
         box-shadow: 0 4px 20px rgba(0,0,0,0.05);
         border-left: 5px solid #667eea;
         margin-bottom: 1.5rem;
+        color: #1a1a2e !important;
     }
-    .academic-card h4 { color: #2d1b69; margin-top: 0; font-weight: 700; }
+    .academic-card h4 { 
+        color: #2d1b69; 
+        margin-top: 0; 
+        font-weight: 700; 
+    }
+    .academic-card p, .academic-card li, .academic-card div {
+        color: #1a1a2e !important;
+    }
     
+    /* Arena card */
     .arena-card {
         background: #ffffff;
         padding: 1.5rem;
@@ -144,7 +216,18 @@ st.markdown("""
         box-shadow: 0 8px 24px rgba(0,0,0,0.08);
         border: 1px solid #e2e8f0;
         margin-bottom: 1.5rem;
+        color: #1a1a2e !important;
     }
+    .arena-card h4 { 
+        color: #2d1b69; 
+        margin-top: 0; 
+        font-weight: 700; 
+    }
+    .arena-card p, .arena-card div, .arena-card span {
+        color: #1a1a2e !important;
+    }
+    
+    /* Leaderboard */
     .leaderboard-row {
         display: flex;
         align-items: center;
@@ -154,12 +237,17 @@ st.markdown("""
         margin-bottom: 0.5rem;
         background: #f8fafc;
         border-left: 4px solid #cbd5e1;
+        color: #1a1a2e !important;
     }
+    .leaderboard-row span { color: #1a1a2e !important; }
+    .leaderboard-row b { color: #2d1b69 !important; }
+    
     .rank-1 { background: #fffdf5; border-left-color: #ffd700; }
     .rank-2 { background: #fafaff; border-left-color: #94a3b8; }
     .rank-3 { background: #fffaf5; border-left-color: #b45309; }
     .medal { font-size: 1.4rem; font-weight: bold; }
     
+    /* Footer */
     .footer {
         text-align: center;
         padding: 1.5rem;
@@ -169,27 +257,9 @@ st.markdown("""
         margin-top: 2rem;
     }
     .footer p { margin: 0; color: white; }
+    .footer .sub-text { color: rgba(255,255,255,0.8) !important; font-size: 0.9rem; }
     
-    .stNumberInput input {
-        background-color: #ffffff !important;
-        color: #1a1a2e !important;
-        border: 2px solid rgba(255, 255, 255, 0.3) !important;
-        border-radius: 10px !important;
-        font-weight: 600 !important;
-        font-size: 1rem !important;
-    }
-    
-    .tooltip-hint {
-        background: #f8f9fa;
-        border: 1px solid #dee2e6;
-        border-radius: 8px;
-        padding: 0.5rem 1rem;
-        margin: 0.5rem 0;
-        font-size: 0.9rem;
-        color: #495057;
-        border-left: 3px solid #667eea;
-    }
-    
+    /* Download hint */
     .download-hint {
         background: #e7f3ff;
         border: 1px solid #b8d4f0;
@@ -197,6 +267,82 @@ st.markdown("""
         padding: 0.8rem 1.2rem;
         margin: 0.5rem 0;
         color: #004085;
+    }
+    
+    /* Warning và Info trong main area */
+    .stAlert {
+        color: #1a1a2e !important;
+    }
+    .stAlert p { color: #1a1a2e !important; }
+    
+    /* Expander */
+    .streamlit-expanderHeader {
+        color: #1a1a2e !important;
+        font-weight: 600 !important;
+    }
+    .streamlit-expanderContent {
+        color: #1a1a2e !important;
+    }
+    .streamlit-expanderContent p, 
+    .streamlit-expanderContent li,
+    .streamlit-expanderContent div {
+        color: #1a1a2e !important;
+    }
+    
+    /* Markdown trong main area */
+    .main .markdown-text-container p,
+    .main .markdown-text-container li,
+    .main .markdown-text-container div {
+        color: #1a1a2e !important;
+    }
+    
+    /* Dataframe */
+    .dataframe {
+        color: #1a1a2e !important;
+    }
+    .dataframe th {
+        color: #2d1b69 !important;
+        font-weight: 700 !important;
+    }
+    .dataframe td {
+        color: #1a1a2e !important;
+    }
+    
+    /* Styling cho các text trong info, success, warning */
+    .stAlert div[data-testid="stMarkdownContainer"] p,
+    .stAlert div[data-testid="stMarkdownContainer"] div {
+        color: #1a1a2e !important;
+    }
+    
+    /* Radio buttons trong main area */
+    .stRadio div[role="radiogroup"] label {
+        color: #1a1a2e !important;
+    }
+    .stRadio div[role="radiogroup"] label span {
+        color: #1a1a2e !important;
+    }
+    
+    /* Markdown trong info box của sidebar */
+    .sidebar-header h3 {
+        color: #FFFFFF !important;
+    }
+    
+    /* Đảm bảo text trong các container khác */
+    .stMarkdown p { color: #1a1a2e !important; }
+    .stMarkdown h1, .stMarkdown h2, .stMarkdown h3, .stMarkdown h4 {
+        color: #2d1b69 !important;
+    }
+    
+    /* Thêm style cho các thẻ span trong markdown */
+    .stMarkdown span { color: inherit !important; }
+    
+    /* Nút download */
+    div[data-testid="stDownloadButton"] button {
+        color: #1a1a2e !important;
+        font-weight: 600 !important;
+    }
+    div[data-testid="stDownloadButton"] button * {
+        color: #1a1a2e !important;
     }
 </style>
 """, unsafe_allow_html=True)
