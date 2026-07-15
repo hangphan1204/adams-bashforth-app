@@ -51,6 +51,9 @@ st.markdown("""
     }
     .stSidebar * { color: #FFFFFF !important; }
     .stSidebar label { color: #FFFFFF !important; font-weight: 500 !important; }
+    .stSidebar .stSelectbox div[data-baseweb="select"] > div * {
+    color: #000000 !important;  /* Đổi thành màu đen */
+}
     
     .stSidebar .stNumberInput input, .stSidebar .stTextInput input {
         background-color: #ffffff !important;
