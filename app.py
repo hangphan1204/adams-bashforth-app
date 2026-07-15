@@ -15,12 +15,14 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS
+# Custom CSS - Optimized for Light Theme
 st.markdown("""
 <style>
+    /* === RESET & BASE === */
     .stApp { background: #f0f2f6; }
     .main > div { padding-top: 1rem; background: #f0f2f6; }
     
+    /* === HEADER CHÍNH - Giữ nguyên màu gradient === */
     .custom-header {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         padding: 2rem 2.5rem;
@@ -30,29 +32,69 @@ st.markdown("""
         box-shadow: 0 8px 30px rgba(102, 126, 234, 0.3);
         border: none;
     }
-    .custom-header h1 { margin: 0; font-size: 2.6rem; font-weight: 700; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-    .custom-header h2 { margin: 0.3rem 0 0 0; font-weight: 300; font-size: 1.6rem; color: rgba(255, 255, 255, 0.95); }
-    
-    .badge-container { margin-top: 0.8rem; display: flex; gap: 0.8rem; flex-wrap: wrap; }
+    .custom-header h1 { 
+        margin: 0; 
+        font-size: 2.6rem; 
+        font-weight: 700; 
+        color: white !important; 
+        text-shadow: 0 2px 4px rgba(0,0,0,0.2); 
+    }
+    .custom-header h2 { 
+        margin: 0.3rem 0 0 0; 
+        font-weight: 300; 
+        font-size: 1.6rem; 
+        color: rgba(255, 255, 255, 0.95) !important; 
+    }
     .badge {
         background: rgba(255, 255, 255, 0.2);
         padding: 0.3rem 1.2rem;
         border-radius: 20px;
         font-size: 0.9rem;
-        color: white;
+        color: white !important;
         border: 1px solid rgba(255, 255, 255, 0.3);
         backdrop-filter: blur(5px);
         font-weight: 500;
     }
     
+    /* Tối ưu lại Sidebar để hiển thị tốt trên cả Light và Dark Mode */
     .stSidebar {
         background: linear-gradient(180deg, #2d1b69 0%, #11998e 100%) !important;
         border-right: none;
     }
-    .stSidebar * { color: #FFFFFF !important; }
-    .stSidebar label { color: #FFFFFF !important; font-weight: 500 !important; }
     
-    .stSidebar .stNumberInput input, .stSidebar .stTextInput input {
+    /* Thay vì chọn tất cả (*) bằng màu trắng, ta chỉ định rõ các text, nhãn và sub-header trong sidebar luôn là màu trắng */
+    .stSidebar [data-testid="stMarkdownContainer"] p,
+    .stSidebar [data-testid="stMarkdownContainer"] h1,
+    .stSidebar [data-testid="stMarkdownContainer"] h2,
+    .stSidebar [data-testid="stMarkdownContainer"] h3,
+    .stSidebar [data-testid="stMarkdownContainer"] h4,
+    .stSidebar [data-testid="stMarkdownContainer"] h5,
+    .stSidebar [data-testid="stMarkdownContainer"] h6,
+    .stSidebar label, 
+    .stSidebar .stRadio legend,
+    .stSidebar .stCheckbox label {
+        color: #FFFFFF !important;
+    }
+    
+    /* Đảm bảo text hiển thị bên trong ô nhập liệu (Selectbox, Number Input) có độ tương phản cao */
+    .stSidebar .stNumberInput input, 
+    .stSidebar .stTextInput input,
+    .stSidebar div[data-baseweb="select"] {
+        background-color: #ffffff !important;
+        color: #1a1a2e !important;
+        border: 2px solid rgba(255, 255, 255, 0.3) !important;
+        border-radius: 10px !important;
+        font-weight: 600 !important;
+    }
+
+    /* Đảm bảo nhãn giá trị được chọn trong Selectbox luôn rõ nét */
+    .stSidebar div[data-baseweb="select"] span {
+        color: #1a1a2e !important;
+    }
+    
+    /* Sidebar - Input fields (chữ đen để dễ đọc) */
+    .stSidebar .stNumberInput input, 
+    .stSidebar .stTextInput input {
         background-color: #ffffff !important;
         color: #1a1a2e !important;
         border: 2px solid rgba(255, 255, 255, 0.3) !important;
@@ -60,7 +102,6 @@ st.markdown("""
         font-weight: 600 !important;
         font-size: 1rem !important;
     }
-    
     .stSidebar .stSelectbox div[data-baseweb="select"] > div {
         background-color: #ffffff !important;
         border: 2px solid rgba(255, 255, 255, 0.3) !important;
@@ -70,7 +111,17 @@ st.markdown("""
         color: #1a1a2e !important;
         font-weight: 600 !important;
     }
-
+    .stSidebar .stRadio div[role="radiogroup"] label {
+        color: #FFFFFF !important;
+    }
+    .stSidebar .stRadio div[role="radiogroup"] label span {
+        color: #FFFFFF !important;
+    }
+    .stSidebar .stCheckbox label span {
+        color: #FFFFFF !important;
+    }
+    
+    /* Sidebar - Buttons */
     .stSidebar div[data-testid="stButton"] button {
         background: linear-gradient(135deg, #00b09b 0%, #96c93d 100%) !important;
         border: 2px solid rgba(255, 255, 255, 0.4) !important;
@@ -78,34 +129,15 @@ st.markdown("""
         box-shadow: 0 4px 15px rgba(0, 176, 155, 0.3) !important;
         transition: all 0.3s ease !important;
         width: 100% !important;
+        color: #FFFFFF !important;
     }
     .stSidebar div[data-testid="stButton"] button * {
         color: #FFFFFF !important;
         font-weight: 700 !important;
         font-size: 1rem !important;
     }
-    .stSidebar div[data-testid="stButton"] button:hover {
-        transform: translateY(-2px) !important;
-        box-shadow: 0 6px 20px rgba(0, 176, 155, 0.5) !important;
-    }
-
-    div[data-testid="stFormSubmitButton"] button {
-        background: linear-gradient(135deg, #ffd700 0%, #ffa500 100%) !important;
-        border: none !important;
-        border-radius: 12px !important;
-        color: #1a1a2e !important;
-        font-weight: 700 !important;
-        font-size: 1.1rem !important;
-        transition: all 0.3s ease !important;
-        box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4) !important;
-        padding: 0.7rem 1.5rem !important;
-        width: 100% !important;
-    }
-    div[data-testid="stFormSubmitButton"] button:hover {
-        transform: translateY(-2px) !important;
-        box-shadow: 0 6px 25px rgba(255, 215, 0, 0.6) !important;
-    }
     
+    /* Sidebar - Info box */
     .info-box {
         background: rgba(0, 0, 0, 0.3) !important;
         backdrop-filter: blur(10px);
@@ -117,6 +149,29 @@ st.markdown("""
     .info-box p { margin: 0.3rem 0; color: #FFFFFF !important; }
     .info-box b { color: #ffd700 !important; }
     
+    /* Sidebar - Tooltip hint */
+    .tooltip-hint {
+        background: rgba(255,255,255,0.1) !important;
+        border-color: rgba(255,215,0,0.5) !important;
+        color: #FFFFFF !important;
+        border: 1px solid rgba(255,215,0,0.3);
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+        margin: 0.5rem 0;
+        font-size: 0.9rem;
+    }
+    .tooltip-hint b { color: #ffd700 !important; }
+    .tooltip-hint kbd {
+        background: rgba(255,215,0,0.2);
+        color: #FFFFFF;
+        padding: 0.1rem 0.5rem;
+        border-radius: 4px;
+        border: 1px solid rgba(255,215,0,0.3);
+    }
+    
+    /* === MAIN AREA - Light theme, chữ đen === */
+    
+    /* Section header - gradient, chữ trắng */
     .section-header {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         padding: 0.7rem 1.5rem;
@@ -125,8 +180,14 @@ st.markdown("""
         border: none;
         box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
     }
-    .section-header h3 { color: white; margin: 0; font-weight: 600; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+    .section-header h3 { 
+        color: white !important; 
+        margin: 0; 
+        font-weight: 600; 
+        text-shadow: 0 2px 4px rgba(0,0,0,0.2); 
+    }
     
+    /* Academic card - nền trắng, chữ đen */
     .academic-card {
         background: #ffffff;
         padding: 1.5rem;
@@ -134,9 +195,18 @@ st.markdown("""
         box-shadow: 0 4px 20px rgba(0,0,0,0.05);
         border-left: 5px solid #667eea;
         margin-bottom: 1.5rem;
+        color: #1a1a2e !important;
     }
-    .academic-card h4 { color: #2d1b69; margin-top: 0; font-weight: 700; }
+    .academic-card h4 { 
+        color: #2d1b69 !important; 
+        margin-top: 0; 
+        font-weight: 700; 
+    }
+    .academic-card p, .academic-card li, .academic-card div, .academic-card b {
+        color: #1a1a2e !important;
+    }
     
+    /* Arena card - nền trắng, chữ đen */
     .arena-card {
         background: #ffffff;
         padding: 1.5rem;
@@ -144,7 +214,18 @@ st.markdown("""
         box-shadow: 0 8px 24px rgba(0,0,0,0.08);
         border: 1px solid #e2e8f0;
         margin-bottom: 1.5rem;
+        color: #1a1a2e !important;
     }
+    .arena-card h4 { 
+        color: #2d1b69 !important; 
+        margin-top: 0; 
+        font-weight: 700; 
+    }
+    .arena-card p, .arena-card div, .arena-card span, .arena-card b {
+        color: #1a1a2e !important;
+    }
+    
+    /* Leaderboard row - nền sáng, chữ đen */
     .leaderboard-row {
         display: flex;
         align-items: center;
@@ -154,12 +235,16 @@ st.markdown("""
         margin-bottom: 0.5rem;
         background: #f8fafc;
         border-left: 4px solid #cbd5e1;
+        color: #1a1a2e !important;
     }
+    .leaderboard-row span { color: #1a1a2e !important; }
+    .leaderboard-row b { color: #2d1b69 !important; }
     .rank-1 { background: #fffdf5; border-left-color: #ffd700; }
     .rank-2 { background: #fafaff; border-left-color: #94a3b8; }
     .rank-3 { background: #fffaf5; border-left-color: #b45309; }
     .medal { font-size: 1.4rem; font-weight: bold; }
     
+    /* Footer - gradient, chữ trắng */
     .footer {
         text-align: center;
         padding: 1.5rem;
@@ -168,35 +253,147 @@ st.markdown("""
         border: none;
         margin-top: 2rem;
     }
-    .footer p { margin: 0; color: white; }
+    .footer p { margin: 0; color: white !important; }
+    .footer .sub-text { color: rgba(255,255,255,0.8) !important; font-size: 0.9rem; }
     
-    .stNumberInput input {
-        background-color: #ffffff !important;
-        color: #1a1a2e !important;
-        border: 2px solid rgba(255, 255, 255, 0.3) !important;
-        border-radius: 10px !important;
-        font-weight: 600 !important;
-        font-size: 1rem !important;
-    }
+    /* === CÁC THÀNH PHẦN KHÁC - Light theme === */
     
-    .tooltip-hint {
-        background: #f8f9fa;
-        border: 1px solid #dee2e6;
-        border-radius: 8px;
-        padding: 0.5rem 1rem;
-        margin: 0.5rem 0;
-        font-size: 0.9rem;
-        color: #495057;
-        border-left: 3px solid #667eea;
-    }
-    
+    /* Download hint */
     .download-hint {
         background: #e7f3ff;
         border: 1px solid #b8d4f0;
         border-radius: 8px;
         padding: 0.8rem 1.2rem;
         margin: 0.5rem 0;
-        color: #004085;
+        color: #004085 !important;
+    }
+    .download-hint b { color: #004085 !important; }
+    
+    /* Alert / Warning / Info */
+    .stAlert {
+        color: #1a1a2e !important;
+    }
+    .stAlert p { color: #1a1a2e !important; }
+    .stAlert div { color: #1a1a2e !important; }
+    
+    /* Expander */
+    .streamlit-expanderHeader {
+        color: #1a1a2e !important;
+        font-weight: 600 !important;
+    }
+    .streamlit-expanderContent {
+        color: #1a1a2e !important;
+    }
+    .streamlit-expanderContent p, 
+    .streamlit-expanderContent li,
+    .streamlit-expanderContent div,
+    .streamlit-expanderContent b,
+    .streamlit-expanderContent h1,
+    .streamlit-expanderContent h2,
+    .streamlit-expanderContent h3,
+    .streamlit-expanderContent h4 {
+        color: #1a1a2e !important;
+    }
+    
+    /* Markdown trong main area */
+    .main .markdown-text-container p,
+    .main .markdown-text-container li,
+    .main .markdown-text-container div,
+    .main .markdown-text-container b,
+    .main .markdown-text-container span {
+        color: #1a1a2e !important;
+    }
+    .main .markdown-text-container h1,
+    .main .markdown-text-container h2,
+    .main .markdown-text-container h3,
+    .main .markdown-text-container h4 {
+        color: #2d1b69 !important;
+    }
+    
+    /* Dataframe */
+    .dataframe {
+        color: #1a1a2e !important;
+    }
+    .dataframe th {
+        color: #2d1b69 !important;
+        font-weight: 700 !important;
+        background: #f0f2f6 !important;
+    }
+    .dataframe td {
+        color: #1a1a2e !important;
+    }
+    .dataframe tr:hover {
+        background: #f8f9fa !important;
+    }
+    
+    /* Radio buttons trong main area */
+    .stRadio div[role="radiogroup"] label {
+        color: #1a1a2e !important;
+    }
+    .stRadio div[role="radiogroup"] label span {
+        color: #1a1a2e !important;
+    }
+    
+    /* Markdown tổng quát */
+    .stMarkdown p { color: #1a1a2e !important; }
+    .stMarkdown h1, .stMarkdown h2, .stMarkdown h3, .stMarkdown h4 {
+        color: #2d1b69 !important;
+    }
+    .stMarkdown b { color: #2d1b69 !important; }
+    .stMarkdown div { color: #1a1a2e !important; }
+    
+    /* Nút download */
+    div[data-testid="stDownloadButton"] button {
+        color: #1a1a2e !important;
+        font-weight: 600 !important;
+        background: #f0f2f6 !important;
+        border: 1px solid #cbd5e1 !important;
+    }
+    div[data-testid="stDownloadButton"] button * {
+        color: #1a1a2e !important;
+    }
+    div[data-testid="stDownloadButton"] button:hover {
+        background: #e2e8f0 !important;
+    }
+    
+    /* Info box trong stability section */
+    div[style*="background: #f0f4ff"] {
+        background: #f0f4ff !important;
+        color: #1a1a2e !important;
+    }
+    div[style*="background: #f0f4ff"] b {
+        color: #2d1b69 !important;
+    }
+    
+    /* Stability point box */
+    div[style*="background: rgba(0,0,0,0.05)"] {
+        background: #f8f9fa !important;
+        color: #1a1a2e !important;
+    }
+    div[style*="background: rgba(0,0,0,0.05)"] p,
+    div[style*="background: rgba(0,0,0,0.05)"] h5,
+    div[style*="background: rgba(0,0,0,0.05)"] b {
+        color: #1a1a2e !important;
+    }
+    
+    /* Success/Error messages */
+    .stSuccess, .stError {
+        color: #1a1a2e !important;
+    }
+    .stSuccess p, .stError p {
+        color: #1a1a2e !important;
+    }
+    
+    /* Tabs */
+    .stTabs [data-baseweb="tab-list"] button {
+        color: #1a1a2e !important;
+    }
+    .stTabs [data-baseweb="tab-list"] button:hover {
+        color: #2d1b69 !important;
+    }
+    .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
+        color: #2d1b69 !important;
+        border-bottom-color: #667eea !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -777,6 +974,13 @@ with col_chart2:
         index=0,
         key="main_chart_type"
     )
+    
+    # Thêm hướng dẫn tải ảnh
+    st.markdown("""
+    <div style="background: #e7f3ff; padding: 0.5rem; border-radius: 6px; margin-top: 0.5rem; font-size: 0.8rem; border: 1px solid #b8d4f0;">
+        📷 <b>Tải ảnh:</b> Click vào biểu tượng 📷 trên thanh công cụ
+    </div>
+    """, unsafe_allow_html=True)
 
 with col_chart1:
     fig = go.Figure()
@@ -801,6 +1005,24 @@ with col_chart1:
         plot_bgcolor='rgba(255,255,255,0.8)', paper_bgcolor='rgba(255,255,255,0.9)'
     )
     st.plotly_chart(fig, use_container_width=True, key="static_chart_main")
+    
+    # Hướng dẫn tải ảnh chi tiết cho biểu đồ chính
+    with st.expander("📷 Hướng dẫn tải ảnh biểu đồ này"):
+        st.markdown("""
+        **Các cách tải ảnh biểu đồ:**
+        
+        1. **Click chuột phải** vào biểu đồ → Chọn:
+           - `Download image as PNG` (định dạng ảnh nén)
+           - `Download image as SVG` (định dạng vector, chất lượng cao)
+        
+        2. **Sử dụng thanh công cụ** phía trên bên phải biểu đồ:
+           - Click vào biểu tượng **máy ảnh** 📷
+           - Chọn định dạng mong muốn
+        
+        3. **Phím tắt:** Nhấn `Ctrl+S` hoặc `Cmd+S` khi đang focus vào biểu đồ
+        
+        💡 **Mẹo:** Định dạng SVG cho chất lượng tốt nhất khi in ấn hoặc phóng to
+        """)
 
 # --- SO SÁNH HIỆU NĂNG ---
 st.markdown("""
@@ -890,7 +1112,7 @@ with col_stab2:
     <div style="background: rgba(0,0,0,0.05); padding: 1.2rem; border-radius: 10px; border-left: 5px solid #764ba2;">
         <h5>📍 Điểm kiểm thử hiện tại:</h5>
         <p><b>hλ</b> = <b>{h_lambda_point:.4f}</b></p>
-        <p style="font-size: 0.9rem; color: #555;">Vị trí của 🔴 chấm đỏ trên Đồ thị</p>
+        <p style="font-size: 0.9rem; color: #555;">Vị trí của 🔴 chấm đỏ trên đồ thị</p>
     """, unsafe_allow_html=True)
     if h_lambda_point > -0.3:
         st.success("✅ **Nghiệm ổn định!** Chấm đỏ nằm trong vùng ổn định.")
@@ -922,6 +1144,9 @@ if has_exact and Y_true is not None and not has_diverged:
     </div>
     """, unsafe_allow_html=True)
     
+    # Thêm hướng dẫn tải ảnh cho biểu đồ sai số
+    st.info("💡 **Hướng dẫn tải ảnh sai số:** Click chuột phải vào biểu đồ → Chọn 'Download image as PNG' hoặc 'Download image as SVG'")
+    
     error_chart_type = st.radio(
         "Loại biểu đồ:",
         ["Tuyến tính", "Semi-log y", "Semi-log x", "Log-log"],
@@ -950,6 +1175,24 @@ if has_exact and Y_true is not None and not has_diverged:
     fig2.update_yaxes(title_text="Sai số %", type=type_err_y, showgrid=True, gridcolor='lightgray', row=2, col=1)
     fig2.update_layout(height=550, showlegend=True, template='plotly_white', plot_bgcolor='rgba(255,255,255,0.8)', paper_bgcolor='rgba(255,255,255,0.9)')
     st.plotly_chart(fig2, use_container_width=True, key="error_chart")
+    
+    # Hướng dẫn tải ảnh cho biểu đồ sai số
+    with st.expander("📷 Hướng dẫn tải ảnh biểu đồ sai số"):
+        st.markdown("""
+        **Các cách tải ảnh biểu đồ sai số:**
+        
+        1. **Click chuột phải** vào biểu đồ → Chọn:
+           - `Download image as PNG` 
+           - `Download image as SVG` (khuyến nghị cho chất lượng cao)
+        
+        2. **Sử dụng thanh công cụ** phía trên bên phải biểu đồ:
+           - Click vào biểu tượng **máy ảnh** 📷
+           - Chọn định dạng mong muốn
+        
+        3. **Phím tắt:** Nhấn `Ctrl+S` hoặc `Cmd+S` khi đang focus vào biểu đồ
+        
+        💡 **Lưu ý:** Định dạng SVG là lựa chọn tốt nhất cho báo cáo khoa học và in ấn
+        """)
 
 # --- MA TRẬN KẾT QUẢ ---
 st.markdown("""
