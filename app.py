@@ -56,15 +56,41 @@ st.markdown("""
         font-weight: 500;
     }
     
-    /* === SIDEBAR - Nền gradient, chữ trắng === */
+    /* Tối ưu lại Sidebar để hiển thị tốt trên cả Light và Dark Mode */
     .stSidebar {
         background: linear-gradient(180deg, #2d1b69 0%, #11998e 100%) !important;
         border-right: none;
     }
-    .stSidebar * { color: #FFFFFF !important; }
-    .stSidebar label { color: #FFFFFF !important; font-weight: 500 !important; }
-    .stSidebar .stMarkdown p { color: #FFFFFF !important; }
-    .stSidebar .stMarkdown div { color: #FFFFFF !important; }
+    
+    /* Thay vì chọn tất cả (*) bằng màu trắng, ta chỉ định rõ các text, nhãn và sub-header trong sidebar luôn là màu trắng */
+    .stSidebar [data-testid="stMarkdownContainer"] p,
+    .stSidebar [data-testid="stMarkdownContainer"] h1,
+    .stSidebar [data-testid="stMarkdownContainer"] h2,
+    .stSidebar [data-testid="stMarkdownContainer"] h3,
+    .stSidebar [data-testid="stMarkdownContainer"] h4,
+    .stSidebar [data-testid="stMarkdownContainer"] h5,
+    .stSidebar [data-testid="stMarkdownContainer"] h6,
+    .stSidebar label, 
+    .stSidebar .stRadio legend,
+    .stSidebar .stCheckbox label {
+        color: #FFFFFF !important;
+    }
+    
+    /* Đảm bảo text hiển thị bên trong ô nhập liệu (Selectbox, Number Input) có độ tương phản cao */
+    .stSidebar .stNumberInput input, 
+    .stSidebar .stTextInput input,
+    .stSidebar div[data-baseweb="select"] {
+        background-color: #ffffff !important;
+        color: #1a1a2e !important;
+        border: 2px solid rgba(255, 255, 255, 0.3) !important;
+        border-radius: 10px !important;
+        font-weight: 600 !important;
+    }
+
+    /* Đảm bảo nhãn giá trị được chọn trong Selectbox luôn rõ nét */
+    .stSidebar div[data-baseweb="select"] span {
+        color: #1a1a2e !important;
+    }
     
     /* Sidebar - Input fields (chữ đen để dễ đọc) */
     .stSidebar .stNumberInput input, 
