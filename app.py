@@ -51,9 +51,6 @@ st.markdown("""
     }
     .stSidebar * { color: #FFFFFF !important; }
     .stSidebar label { color: #FFFFFF !important; font-weight: 500 !important; }
-    .stSidebar .stSelectbox div[data-baseweb="select"] > div * {
-    color: #000000 !important;  /* Đổi thành màu đen */
-}
     
     .stSidebar .stNumberInput input, .stSidebar .stTextInput input {
         background-color: #ffffff !important;
@@ -1023,7 +1020,7 @@ for col in df_display.columns:
     else:
         df_display[col] = df_display[col].apply(lambda x: f"{x:.6f}" if not pd.isna(x) else "NaN")
 
-# ===== HIỂN THỊ BẢNG DỮ LIỆU (bỏ background_gradient để tránh lỗi matplotlib) =====
+# ===== HIỂN THỊ BẢNG DỮ LIỆU =====
 styled_df = df_display
 st.dataframe(styled_df, use_container_width=True, height=400)
 
@@ -1039,6 +1036,8 @@ col_dl1, col_dl2, col_dl3, col_dl4 = st.columns(4)
 with col_dl1:
     csv = df_matrix.to_csv(index=False, float_format='%.12f').encode('utf-8-sig')
     st.download_button(label="📥 Tải CSV", data=csv, file_name=f"nghiem_AB_{N_use}_{Tmax_use}.csv", mime="text/csv", use_container_width=True)
+
+# col_dl2 đã được xóa (không còn Excel)
 
 with col_dl3:
     def format_error(val):
