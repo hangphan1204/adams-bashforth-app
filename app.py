@@ -1059,13 +1059,6 @@ with col_chart2:
         index=0,
         key="main_chart_type"
     )
-    
-    # Thêm hướng dẫn tải ảnh
-    st.markdown("""
-    <div style="background: #e7f3ff; padding: 0.5rem; border-radius: 6px; margin-top: 0.5rem; font-size: 0.8rem; border: 1px solid #b8d4f0;">
-        📷 <b>Tải ảnh:</b> Click vào biểu tượng 📷 trên thanh công cụ
-    </div>
-    """, unsafe_allow_html=True)
 
 with col_chart1:
     fig = go.Figure()
@@ -1230,9 +1223,6 @@ if has_exact and Y_true is not None and not has_diverged:
         <h3>📊 Biểu đồ sai số chi tiết</h3>
     </div>
     """, unsafe_allow_html=True)
-    
-    # Thêm hướng dẫn tải ảnh cho biểu đồ sai số
-    st.info("💡 **Hướng dẫn tải ảnh sai số:** Click chuột phải vào biểu đồ → Chọn 'Download image as PNG' hoặc 'Download image as SVG'")
     
     error_chart_type = st.radio(
         "Loại biểu đồ:",
