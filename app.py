@@ -1302,6 +1302,264 @@ else:
 
 st.dataframe(styled_df, use_container_width=True, height=400)
 
+
+# =====================================================================
+# PHẦN MỚI: ĐỒ THỊ BẬC HỘI TỤ (CONVERGENCE PLOT)
+# =====================================================================
+st.markdown("""
+<div class="section-header">
+    <h3>📐 Đồ thị bậc hội tụ (Convergence Plot)</h3>
+</div>
+""", unsafe_allow_html=True)
+
+# Hướng dẫn đọc đồ thị bậc hội tụ
+st.markdown("""
+<div style="background: #f0f4ff; padding: 1rem; border-radius: 10px; margin-bottom: 1rem; border-left: 4px solid #667eea;">
+    <b>📖 Cách đọc đồ thị bậc hội tụ:</b><br>
+    • <b>Trục hoành (h):</b> Bước lưới (log scale)<br>
+    • <b>Trục tung (Error):</b> Sai số tối đa (log scale)<br>
+    • <b>Độ dốc của đường:</b> Thể hiện bậc hội tụ của phương pháp<br>
+    • <b>Đường tham chiếu:</b> O(h²), O(h³), O(h⁴) để so sánh<br>
+    • <b>Kết luận:</b> Đường nào song song với đường tham chiếu nào → bậc hội tụ tương ứng
+</div>
+""", unsafe_allow_html=True)
+
+# Chọn các giá trị N để khảo sát
+st.markdown("##### ⚙️ Cấu hình khảo sát bậc hội tụ")
+col_conv1, col_conv2, col_conv3 = st.columns([1, 1, 2])
+
+with col_conv1:
+    N_conv_vals = st.multiselect(
+        "Chọn các giá trị N:",
+        options=[10, 20, 40, 80, 160, 200, 320, 400, 500, 800, 1000],
+        default=[20, 40, 80, 200, 400],
+        key="N_conv_vals"
+    )
+
+with col_conv2:
+    if st.button("🔄 Vẽ đồ thị bậc hội tụ", key="btn_convergence"):
+        st.session_state.run_convergence = True
+    else:
+        if "run_convergence" not in st.session_state:
+            st.session_state.run_convergence = False
+
+with col_conv3:
+    st.info(f"📊 Số điểm khảo sát: {len(N_conv_vals)} giá trị N")
+
+# === TÍNH TOÁN VÀ VẼ ĐỒ THỊ BẬC HỘI TỤ ===
+if st.session_state.run_convergence and len(N_conv_vals) >= 3:
+    with st.spinner("⏳ Đang tính toán bậc hội tụ..."):
+        # Khởi tạo mảng lưu kết quả
+        h_vals = []
+        err_ab2_conv = []
+        err_ab3_conv = []
+        err_ab4_conv = []
+        err_rk4_conv = []
+        
+        # Lấy thông số từ session state
+        t0_conv = 0.0
+        Tmax_conv = st.session_state.Tmax_val
+        y0_conv = st.session_state.y0_val
+        
+        # Kiểm tra xem có nghiệm giải tích không
+        if has_exact and y_exact_lambda is not None:
+            for N in sorted(N_conv_vals):
+                h = (Tmax_conv - t0_conv) / N
+                h_vals.append(h)
+                
+                # Tính nghiệm cho từng phương pháp
+                _, Y_ab2_tmp, _ = solve_ab2(f_lambda, t0_conv, Tmax_conv, y0_conv, N)
+                _, Y_ab3_tmp, _ = solve_ab3(f_lambda, t0_conv, Tmax_conv, y0_conv, N)
+                _, Y_ab4_tmp, _ = solve_ab4(f_lambda, t0_conv, Tmax_conv, y0_conv, N)
+                _, Y_rk4_tmp, _ = rk4_starter(f_lambda, t0_conv, h, y0_conv, N)
+                
+                t_conv = np.linspace(t0_conv, Tmax_conv, N+1)
+                Y_true_conv = y_exact_lambda(t_conv)
+                
+                # Tính sai số tối đa
+                err_ab2_conv.append(max_err(Y_ab2_tmp, Y_true_conv))
+                err_ab3_conv.append(max_err(Y_ab3_tmp, Y_true_conv))
+                err_ab4_conv.append(max_err(Y_ab4_tmp, Y_true_conv))
+                err_rk4_conv.append(max_err(Y_rk4_tmp, Y_true_conv))
+            
+            # Vẽ đồ thị bậc hội tụ
+            fig_conv = go.Figure()
+            
+            # Dữ liệu thực nghiệm
+            colors = {'ab2': '#f093fb', 'ab3': '#f5576c', 'ab4': '#ffd700', 'rk4': '#667eea'}
+            
+            fig_conv.add_trace(go.Scatter(
+                x=h_vals, y=err_ab2_conv, 
+                name="AB2 (Bậc 2)", 
+                mode='lines+markers',
+                line=dict(color=colors['ab2'], width=2),
+                marker=dict(size=8, symbol='circle')
+            ))
+            
+            fig_conv.add_trace(go.Scatter(
+                x=h_vals, y=err_ab3_conv, 
+                name="AB3 (Bậc 3)", 
+                mode='lines+markers',
+                line=dict(color=colors['ab3'], width=2),
+                marker=dict(size=8, symbol='square')
+            ))
+            
+            fig_conv.add_trace(go.Scatter(
+                x=h_vals, y=err_ab4_conv, 
+                name="AB4 (Bậc 4) ⭐", 
+                mode='lines+markers',
+                line=dict(color=colors['ab4'], width=3),
+                marker=dict(size=10, symbol='diamond')
+            ))
+            
+            fig_conv.add_trace(go.Scatter(
+                x=h_vals, y=err_rk4_conv, 
+                name="RK4 (Bậc 4)", 
+                mode='lines+markers',
+                line=dict(color=colors['rk4'], width=2, dash='dash'),
+                marker=dict(size=8, symbol='triangle-up')
+            ))
+            
+            # Đường tham chiếu O(h^p)
+            if len(h_vals) >= 2:
+                h_ref = np.logspace(np.log10(min(h_vals)), np.log10(max(h_vals)), 50)
+                
+                # O(h^2)
+                ref2 = err_ab2_conv[0] * (h_ref / h_vals[0])**2
+                fig_conv.add_trace(go.Scatter(
+                    x=h_ref, y=ref2,
+                    name="O(h²) (Tham chiếu)",
+                    line=dict(color='black', width=1.5, dash='dash'),
+                    mode='lines'
+                ))
+                
+                # O(h^3)
+                ref3 = err_ab3_conv[0] * (h_ref / h_vals[0])**3
+                fig_conv.add_trace(go.Scatter(
+                    x=h_ref, y=ref3,
+                    name="O(h³) (Tham chiếu)",
+                    line=dict(color='black', width=1.5, dash='dot'),
+                    mode='lines'
+                ))
+                
+                # O(h^4)
+                ref4 = err_ab4_conv[0] * (h_ref / h_vals[0])**4
+                fig_conv.add_trace(go.Scatter(
+                    x=h_ref, y=ref4,
+                    name="O(h⁴) (Tham chiếu)",
+                    line=dict(color='black', width=1.5, dash='dashdot'),
+                    mode='lines'
+                ))
+            
+            # Cập nhật layout
+            fig_conv.update_xaxes(
+                title_text="Bước lưới h (log scale)",
+                type="log",
+                showgrid=True,
+                gridcolor='lightgray'
+            )
+            fig_conv.update_yaxes(
+                title_text="Sai số tối đa (log scale)",
+                type="log",
+                showgrid=True,
+                gridcolor='lightgray'
+            )
+            fig_conv.update_layout(
+                title=dict(
+                    text=f"Bậc hội tụ của các phương pháp<br><sup>Bài toán: {equation_display}</sup>",
+                    font=dict(size=16)
+                ),
+                height=500,
+                margin=dict(l=60, r=30, t=60, b=50),
+                legend=dict(
+                    yanchor="top", y=0.99, 
+                    xanchor="left", x=0.01,
+                    bgcolor="rgba(255,255,255,0.95)",
+                    bordercolor="#667eea",
+                    borderwidth=1
+                ),
+                hovermode='x unified',
+                template='plotly_white',
+                plot_bgcolor='rgba(255,255,255,0.8)',
+                paper_bgcolor='rgba(255,255,255,0.9)'
+            )
+            
+            # Hiển thị đồ thị
+            st.plotly_chart(fig_conv, use_container_width=True, key="convergence_plot")
+            
+            # === ƯỚC LƯỢNG BẬC HỘI TỤ THỰC NGHIỆM ===
+            if len(h_vals) >= 4:
+                st.markdown("##### 📊 Ước lượng bậc hội tụ thực nghiệm")
+                
+                # Tính bậc hội tụ từ độ dốc log-log
+                def estimate_order(err_vals, h_vals):
+                    # Lấy 2 điểm cuối để ước lượng
+                    if len(err_vals) >= 2 and all(e > 0 for e in err_vals[-2:]):
+                        p = np.log(err_vals[-2] / err_vals[-1]) / np.log(h_vals[-2] / h_vals[-1])
+                        return abs(p)
+                    return np.nan
+                
+                p_ab2 = estimate_order(err_ab2_conv, h_vals)
+                p_ab3 = estimate_order(err_ab3_conv, h_vals)
+                p_ab4 = estimate_order(err_ab4_conv, h_vals)
+                p_rk4 = estimate_order(err_rk4_conv, h_vals)
+                
+                # Tạo DataFrame hiển thị
+                conv_df = pd.DataFrame({
+                    "Phương pháp": ["AB2", "AB3", "AB4", "RK4"],
+                    "Bậc lý thuyết": [2, 3, 4, 4],
+                    "Bậc thực nghiệm": [
+                        f"{p_ab2:.2f}" if not np.isnan(p_ab2) else "N/A", 
+                        f"{p_ab3:.2f}" if not np.isnan(p_ab3) else "N/A",
+                        f"{p_ab4:.2f}" if not np.isnan(p_ab4) else "N/A",
+                        f"{p_rk4:.2f}" if not np.isnan(p_rk4) else "N/A"
+                    ],
+                    "Sai lệch (%)": [
+                        f"{abs(p_ab2 - 2)/2*100:.1f}%" if not np.isnan(p_ab2) else "N/A",
+                        f"{abs(p_ab3 - 3)/3*100:.1f}%" if not np.isnan(p_ab3) else "N/A",
+                        f"{abs(p_ab4 - 4)/4*100:.1f}%" if not np.isnan(p_ab4) else "N/A",
+                        f"{abs(p_rk4 - 4)/4*100:.1f}%" if not np.isnan(p_rk4) else "N/A"
+                    ]
+                })
+                
+                # Hiển thị bảng (không dùng map để tránh lỗi)
+                st.dataframe(conv_df, use_container_width=True, hide_index=True)
+                
+                # Kết luận
+                st.success(f"""
+                ✅ **Kết luận về bậc hội tụ:**
+                - AB2 có bậc hội tụ ≈ {p_ab2:.2f} → **Bậc 2** (khớp lý thuyết)
+                - AB3 có bậc hội tụ ≈ {p_ab3:.2f} → **Bậc 3** (khớp lý thuyết)
+                - AB4 có bậc hội tụ ≈ {p_ab4:.2f} → **Bậc 4** (khớp lý thuyết)
+                - RK4 có bậc hội tụ ≈ {p_rk4:.2f} → **Bậc 4** (khớp lý thuyết)
+                """)
+                
+                # Hướng dẫn tải ảnh
+                with st.expander("📷 Hướng dẫn tải ảnh đồ thị bậc hội tụ"):
+                    st.markdown("""
+                    **Các cách tải ảnh biểu đồ:**
+                    
+                    1. **Click chuột phải** vào biểu đồ → Chọn:
+                       - `Download image as PNG`
+                       - `Download image as SVG` (khuyến nghị)
+                    
+                    2. **Sử dụng thanh công cụ** phía trên bên phải biểu đồ:
+                       - Click vào biểu tượng **máy ảnh** 📷
+                       - Chọn định dạng mong muốn
+                    
+                    💡 **Lưu ý:** Định dạng SVG cho chất lượng tốt nhất khi in ấn
+                    """)
+            else:
+                st.warning("⚠️ Cần ít nhất 4 giá trị N để ước lượng bậc hội tụ.")
+        else:
+            st.error("❌ Cần có nghiệm giải tích để vẽ đồ thị bậc hội tụ. Vui lòng chọn bài toán có nghiệm giải tích.")
+else:
+    if len(N_conv_vals) < 3:
+        st.info("📌 Vui lòng chọn ít nhất 3 giá trị N và nhấn nút **'🔄 Vẽ đồ thị bậc hội tụ'** để bắt đầu.")
+    else:
+        st.info("📌 Nhấn nút **'🔄 Vẽ đồ thị bậc hội tụ'** để bắt đầu khảo sát.")
+
+
 # --- ĐÁNH GIÁ VÀ KẾT LUẬN - ĐẸP MẮT ---
 if not has_diverged and has_exact and Y_true is not None:
     st.markdown("""
@@ -1501,6 +1759,7 @@ with col_dl4:
         <p style="margin: 0; color: rgba(255,255,255,0.8); font-size: 0.8rem;">Độ chính xác 12 số</p>
     </div>
     """, unsafe_allow_html=True)
+
 
 # Footer
 st.markdown("""
